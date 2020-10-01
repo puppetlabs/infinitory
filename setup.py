@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name = "infinitory",
-    version = "0.0.6",
+    version = "0.1.6",
 
     description = "SRE host, role, and service inventory",
     author = "Daniel Parks",
@@ -25,11 +25,13 @@ setuptools.setup(
         "markdown2",
         "pygments",
         "simplepup",
+        "pypuppetdb",
+        "google-cloud-storage",
     ],
 
-    tests_requires = [
+    tests_require = [
         "pytest",
-    ]
+    ],
 
     include_package_data = True,
     entry_points = {
