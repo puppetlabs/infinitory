@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.10-rc-buster
 ADD generate.py /
 ENV TOKEN $TOKEN
 ENV BUCKET $BUCKET
