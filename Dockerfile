@@ -1,8 +1,11 @@
 FROM python:3.10-rc-buster
+ADD README.md /
 ADD generate.py /
+ADD setup.py /
+ADD infinitory /infinitory
 ENV TOKEN $TOKEN
 ENV BUCKET $BUCKET
 ENV GOOGLE_APPLICATION_CREDENTIALS $GOOGLE_APPLICATION_CREDENTIALS
 RUN pip install --upgrade pip
-RUN pip install -i https://artifactory.delivery.puppetlabs.net/artifactory/api/pypi/pypi/simple -v infinitory==0.1.6 
+RUN python setup.py install
 ENTRYPOINT python generate.py ${PDB_HOST} ${TOKEN} ${BUCKET}

@@ -1,0 +1,47 @@
+name: Publish App
+
+on: workflow_dispatch
+
+jobs:
+  publish-app:
+    name: Tag Release and Publish to GCR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+          clean: true
+          fetch-depth: 0
+
+      - name: Get Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: 'Authenticate to Google Cloud'
+        id: 'auth'
+        uses: 'google-github-actions/auth@v0.3.0'
+        with:
+          create_credentials_file: true
+          workload_identity_provider: 'projects/654128975483/locations/global/workloadIdentityPools/gh-action-pool'
+          service_account: 'gcr-gh-action@infracore.iam.gserviceaccount.com'
+
+      - name: Build & push Docker image - flask
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: infracore/infinitory-flask
+          tags: ${{ steps.get_version.outputs.VERSION }}
+          registry: gcr.io
+          dockerfile: infinitory-flask/Dockerfile
+          username: _json_key
+          password: ${{ steps.auth.outputs.credentials_file_path }}
+
+      - name: Build & push Docker image - cron
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: infracore/infinitory-cron
+          tags: ${{ steps.get_version.outputs.VERSION }}
+          registry: gcr.io
+          dockerfile: Dockerfile
+          username: _json_key
+          password: ${{ steps.auth.outputs.credentials_file_path }}
