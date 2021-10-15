@@ -1,11 +1,19 @@
 name: Publish App
 
-on: workflow_dispatch
+on:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   publish-app:
-    name: Tag Release and Publish to GCR
+    name: Publish tagged release to GCR
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -16,14 +24,15 @@ jobs:
 
       - name: Get Version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        run: echo ::set-output name=VERSION::${GITHUB_REF##*/}
 
       - name: 'Authenticate to Google Cloud'
         id: 'auth'
-        uses: 'google-github-actions/auth@v0.3.0'
+        uses: 'google-github-actions/auth@v0.3.1'
         with:
-          create_credentials_file: true
-          workload_identity_provider: 'projects/654128975483/locations/global/workloadIdentityPools/gh-action-pool'
+          token_format: 'access_token'
+          access_token_lifetime: '600s'
+          workload_identity_provider: 'projects/654128975483/locations/global/workloadIdentityPools/gh-action-pool/providers/github-action-provider'
           service_account: 'gcr-gh-action@infracore.iam.gserviceaccount.com'
 
       - name: Build & push Docker image - flask
@@ -32,9 +41,10 @@ jobs:
           image: infracore/infinitory-flask
           tags: ${{ steps.get_version.outputs.VERSION }}
           registry: gcr.io
+          directory: infinitory-flask
           dockerfile: infinitory-flask/Dockerfile
-          username: _json_key
-          password: ${{ steps.auth.outputs.credentials_file_path }}
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
 
       - name: Build & push Docker image - cron
         uses: mr-smithers-excellent/docker-build-push@v5
@@ -43,5 +53,5 @@ jobs:
           tags: ${{ steps.get_version.outputs.VERSION }}
           registry: gcr.io
           dockerfile: Dockerfile
-          username: _json_key
-          password: ${{ steps.auth.outputs.credentials_file_path }}
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
