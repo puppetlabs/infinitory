@@ -63,3 +63,9 @@ python setup.py sdist upload -r local
 ```
 
 `infinitory-flask` - Simply build and push the docker image to release this portion of the app.
+
+Before a release, the `requirements.txt` file should be regenerated:
+```
+pip install pipreqs #if needed
+pipreqs .
+```
