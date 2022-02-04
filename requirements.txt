@@ -7,7 +7,7 @@ paramiko==2.9.2
 protobuf==3.19.4
 Pygments==2.11.2
 pypuppetdb==2.5.1
-requests==2.25.1
+requests==2.27.1
 sample==1.0.0
 setuptools==52.0.0
 simplepup==0.0.4
