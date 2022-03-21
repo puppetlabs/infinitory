@@ -3,7 +3,7 @@ colorlog==6.6.0
 Flask==2.0.2
 Jinja2==3.0.3
 markdown2==2.4.2
-paramiko==2.9.2
+paramiko==2.10.3
 protobuf==3.19.4
 Pygments==2.11.2
 pypuppetdb==2.5.1
