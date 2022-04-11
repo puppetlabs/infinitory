@@ -6,7 +6,7 @@ markdown2==2.4.2
 paramiko==2.9.2
 protobuf==3.19.4
 Pygments==2.11.2
-pypuppetdb==2.5.1
+pypuppetdb==2.5.2
 requests==2.25.1
 sample==1.0.0
 setuptools==52.0.0
