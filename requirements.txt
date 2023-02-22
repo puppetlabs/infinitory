@@ -9,5 +9,5 @@ Pygments==2.11.2
 pypuppetdb==2.5.1
 requests==2.25.1
 sample==1.0.0
-setuptools==52.0.0
+setuptools==67.4.0
 simplepup==0.0.4
